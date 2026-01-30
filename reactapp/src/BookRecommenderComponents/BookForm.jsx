@@ -2,20 +2,6 @@ import { useState, useContext, useEffect } from "react";
 import { BookContext } from "../GlobalContext/BookContext";
 import { useNavigate, useParams } from "react-router-dom";
 import Modal from "../Components/Modal";
-
-import {
-  Box,
-  Button,
-  TextField,
-  Typography,
-  Paper,
-  Stack,
-  Divider,
-  Container,
-} from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { motion } from "framer-motion";
-
 import "./BookForm.css";
 
 const BookForm = () => {
@@ -23,28 +9,39 @@ const BookForm = () => {
   const isEditMode = Boolean(id);
 
   const navigate = useNavigate();
-  const { addBook, updateBook, getBookById, loading, error } =
-    useContext(BookContext);
+  const {
+    addBook,
+    updateBook,
+    getBookById,
+    loading,
+    error,
+  } = useContext(BookContext);
 
   const [formData, setFormData] = useState({
     title: "",
     author: "",
     publishedDate: "",
     genre: "",
-    coverImage: null,
+    coverImage: null, // new uploaded file
   });
+
+  // 👇 holds existing image URL
+  const [existingCoverImage, setExistingCoverImage] = useState(null);
 
   const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [modal, setModal] = useState({ type: "", message: "" });
 
-  /* ================= Fetch book in EDIT mode ================= */
+  /* ============================
+     Fetch book in EDIT mode
+     ============================ */
   useEffect(() => {
     if (!isEditMode) return;
 
     const fetchBook = async () => {
       try {
         const book = await getBookById(id);
+
         setFormData({
           title: book.title,
           author: book.author,
@@ -52,6 +49,9 @@ const BookForm = () => {
           genre: book.genre,
           coverImage: null,
         });
+
+        // 👇 existing image from backend
+        setExistingCoverImage(book.coverImageUrl);
       } catch (err) {
         setModal({
           type: "error",
@@ -64,7 +64,9 @@ const BookForm = () => {
     fetchBook();
   }, [id, isEditMode, getBookById]);
 
-  /* ================= Handlers ================= */
+  /* ============================
+     Handlers
+     ============================ */
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -77,41 +79,61 @@ const BookForm = () => {
     }));
   };
 
-  /* ================= Validation ================= */
+  /* ============================
+     Validation
+     ============================ */
   const validateForm = () => {
     const newErrors = {};
+
     if (!formData.title.trim()) newErrors.title = "Title is required";
     if (!formData.author.trim()) newErrors.author = "Author is required";
     if (!formData.publishedDate)
       newErrors.publishedDate = "Published date is required";
     if (!formData.genre.trim()) newErrors.genre = "Genre is required";
 
-
-    if (!isEditMode && !formData.coverImage)
+    // Image required only in ADD mode
+    if (!isEditMode && !formData.coverImage) {
       newErrors.coverImage = "Cover image is required";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  /* ================= Submit ================= */
+  /* ============================
+     Submit
+     ============================ */
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
 
     try {
       if (isEditMode) {
-        await updateBook({ id, ...formData });
-        setModal({ type: "success", message: "Book updated successfully!" });
+        await updateBook({
+          id,
+          ...formData,
+        });
+
+        setModal({
+          type: "success",
+          message: "Book updated successfully!",
+        });
       } else {
-        await addBook({ ...formData });
-        setModal({ type: "success", message: "Book added successfully!" });
+        await addBook({
+          ...formData,
+        });
+
+        setModal({
+          type: "success",
+          message: "Book added successfully!",
+        });
+
         setFormData({
           title: "",
           author: "",
           publishedDate: "",
           genre: "",
-          coverImage: null
+          coverImage: null,
         });
       }
 
@@ -126,6 +148,9 @@ const BookForm = () => {
     }
   };
 
+  /* ============================
+     Modal handlers
+     ============================ */
   const handleSuccessConfirm = () => {
     setShowModal(false);
     navigate("/viewbook");
@@ -133,152 +158,128 @@ const BookForm = () => {
 
   const handleErrorClose = () => {
     setShowModal(false);
-    // if (isEditMode) navigate("/viewbook");
   };
 
+  /* ============================
+     Render
+     ============================ */
+  if (loading && isEditMode) {
+    return <p>Loading book details...</p>;
+  }
+
   return (
-    <Box className="book-form-page">
-      <Container maxWidth="md">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-        >
-          <Paper elevation={8} className="book-form-card">
-            <Button
-              startIcon={<ArrowBackIcon />}
-              onClick={() => navigate(-1)}
-              className="back-btn"
-            >
-              Back
-            </Button>
+    <div className="book-form">
+      <button className="btn-back" onClick={() => navigate(-1)}>
+        Back
+      </button>
 
-            <Typography variant="h4" className="form-title">
-              {isEditMode ? "Edit Book" : "Add a New Book"}
-            </Typography>
+      <h3>{isEditMode ? "Edit Book" : "Create New Book"}</h3>
 
-            <Typography className="form-subtitle">
-              {isEditMode
-                ? "Update the details of your book"
-                : "Fill in the details to add a new book to the library"}
-            </Typography>
+      <form onSubmit={handleSubmit} noValidate>
+        {error && <p className="error">{error}</p>}
 
-            <Divider sx={{ my: 3 }} />
+        <label>Title*</label>
+        <input
+          type="text"
+          name="title"
+          value={formData.title}
+          onChange={handleChange}
+        />
+        {errors.title && <p className="error">{errors.title}</p>}
 
-            <Box component="form" onSubmit={handleSubmit}>
-              <Stack spacing={2.5}>
-                {/* Title */}
-                <TextField
-                  label="Book Title"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleChange}
-                  fullWidth
-                />
-                {errors.title && (
-                  <Typography variant="caption" color="error">
-                    {errors.title}
-                  </Typography>
-                )}
+        <label>Author*</label>
+        <input
+          type="text"
+          name="author"
+          value={formData.author}
+          onChange={handleChange}
+        />
+        {errors.author && <p className="error">{errors.author}</p>}
 
-                {/* Author */}
-                <TextField
-                  label="Author Name"
-                  name="author"
-                  value={formData.author}
-                  onChange={handleChange}
-                  fullWidth
-                />
-                {errors.author && (
-                  <Typography variant="caption" color="error">
-                    {errors.author}
-                  </Typography>
-                )}
-
-                {/* Date */}
-                <TextField
-                  label="Published Date"
-                  type="date"
-                  name="publishedDate"
-                  value={formData.publishedDate}
-                  onChange={handleChange}
-                  InputLabelProps={{ shrink: true }}
-                  fullWidth
-                />
-                {errors.publishedDate && (
-                  <Typography variant="caption" color="error">
-                    {errors.publishedDate}
-                  </Typography>
-                )}
-
-                {/* Genre */}
-                <TextField
-                  label="Genre"
-                  name="genre"
-                  value={formData.genre}
-                  onChange={handleChange}
-                  fullWidth
-                />
-                {errors.genre && (
-                  <Typography variant="caption" color="error">
-                    {errors.genre}
-                  </Typography>
-                )}
-
-                {/* Cover Image */}
-                <Stack spacing={0.5}>
-                  <Button
-                    variant="outlined"
-                    component="label"
-                    className="upload-btn"
-                  >
-                    {isEditMode ? "Replace Cover Image" : "Upload Cover Image"}
-                    <input
-                      hidden
-                      type="file"
-                      accept=".jpg,.jpeg,.png"
-                      onChange={handleImageChange}
-                    />
-                  </Button>
-                  {errors.coverImage && (
-                    <Typography variant="caption" color="error">
-                      {errors.coverImage}
-                    </Typography>
-                  )}
-                </Stack>
-
-                {/* Submit */}
-                <Button
-                  type="submit"
-                  variant="contained"
-                  size="large"
-                  disabled={loading}
-                  className="submit-btn"
-                >
-                  {loading
-                    ? isEditMode
-                      ? "Updating..."
-                      : "Adding..."
-                      
-                    : isEditMode
-                      ? "Update Book"
-                      : "Add Book"}
-                </Button>
-              </Stack>
-            </Box>
-          </Paper>
-        </motion.div>
-
-        {showModal && (
-          <Modal
-            type={modal.type}
-            message={modal.message}
-            onConfirm={handleSuccessConfirm}
-            onClose={handleErrorClose}
-          />
+        <label>Published Date*</label>
+        <input
+          type="date"
+          name="publishedDate"
+          value={formData.publishedDate}
+          onChange={handleChange}
+          max={new Date().toISOString().split("T")[0]}
+        />
+        {errors.publishedDate && (
+          <p className="error">{errors.publishedDate}</p>
         )}
-      </Container>
-    </Box>
+
+        <label>Genre*</label>
+        <input
+          type="text"
+          name="genre"
+          value={formData.genre}
+          onChange={handleChange}
+        />
+        {errors.genre && <p className="error">{errors.genre}</p>}
+
+        {/* ================= Cover Image Preview ================= */}
+        {isEditMode && (
+          <div style={{ margin: "12px 0", textAlign: "center" }}>
+            {formData.coverImage ? (
+              <img
+                src={URL.createObjectURL(formData.coverImage)}
+                alt="New cover preview"
+                style={{
+                  width: "150px",
+                  height: "220px",
+                  objectFit: "cover",
+                  borderRadius: "8px",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+                }}
+              />
+            ) : existingCoverImage ? (
+              <img
+                src={existingCoverImage}
+                alt="Current cover"
+                style={{
+                  width: "150px",
+                  height: "220px",
+                  objectFit: "cover",
+                  borderRadius: "8px",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+                }}
+              />
+            ) : null}
+          </div>
+        )}
+
+        <label>
+          {isEditMode ? "Replace Cover Image" : "Cover Image*"}
+        </label>
+        <input
+          type="file"
+          accept=".jpg,.jpeg,.png"
+          onChange={handleImageChange}
+        />
+        {errors.coverImage && (
+          <p className="error">{errors.coverImage}</p>
+        )}
+
+        <button type="submit" disabled={loading}>
+          {loading
+            ? isEditMode
+              ? "Updating..."
+              : "Adding..."
+            : isEditMode
+            ? "Update Book"
+            : "Add Book"}
+        </button>
+      </form>
+
+      {showModal && (
+        <Modal
+          type={modal.type}
+          message={modal.message}
+          onConfirm={handleSuccessConfirm}
+          onClose={handleErrorClose}
+        />
+      )}
+    </div>
   );
 };
 
