@@ -118,3 +118,24 @@ export const updateBook_API = async (bookData) => {
   return await response.json();
 };
 
+export const deleteBook_API = async (id) => {
+  const res = await fetch(`${BASE_URL}/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: localStorage.getItem("token"), // if you use auth
+    },
+  });
+
+  if (!res.ok) {
+    let message = "Failed to delete book";
+    try {
+      const errData = await res.json();
+      message = errData.message || message;
+    } catch (_) {}
+    throw new Error(message);
+  }
+
+  // Many DELETE APIs return no body (204 No Content)
+  return true;
+};
+

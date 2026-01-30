@@ -4,11 +4,13 @@ import BookForm from '../BookRecommenderComponents/BookForm'
 import ErrorPage from '../Components/ErrorPage'
 import ViewBook from '../BookRecommenderComponents/ViewBook'
 import HomePage from '../Components/HomePage'
+import BookRecommenderNavbar from '../BookRecommenderComponents/BookRecommenderNavbar'
 
 function AppRouter() {
   return (
     <div>
       <BrowserRouter>
+        <BookRecommenderNavbar/>
         <Routes>
           <Route path='/error' element={<ErrorPage />} />
           <Route path='/home' element={<HomePage/>} />

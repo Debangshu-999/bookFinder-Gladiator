@@ -4,6 +4,7 @@ import {
   addBook_API,
   getBookById_API,
   updateBook_API,
+  deleteBook_API,
   // deleteBook_API,
 } from "../ApiService/ApiService";
 
@@ -37,10 +38,10 @@ const BookContextProvider = ({ children }) => {
     try {
       const savedBook = await addBook_API(bookData);
       setBookList((prev) => [...prev, savedBook]);
-      return savedBook
+      return savedBook;
     } catch (err) {
       setError(err.message);
-      throw err
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -54,7 +55,7 @@ const BookContextProvider = ({ children }) => {
     try {
       const updatedBook = await updateBook_API(bookData);
       setBookList((prev) =>
-        prev.map((b) => (b.id === updatedBook.id ? updatedBook : b))
+        prev.map((b) => (b.id === updatedBook.id ? updatedBook : b)),
       );
     } catch (err) {
       setError(err.message);
@@ -65,34 +66,40 @@ const BookContextProvider = ({ children }) => {
 
   // Get Book by ID
   const getBookById = async (id) => {
-  setLoading(true);
-  setError(null);
+    setLoading(true);
+    setError(null);
 
-  try {
-    const book = await getBookById_API(id);
-    return book;
-  } catch (err) {
-    setError(err.message);
-    throw err;
-  } finally {
-    setLoading(false);
-  }
-};
+    try {
+      const book = await getBookById_API(id);
+      return book;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Delete book
-  // const deleteBook = async (id) => {
-  //   setLoading(true);
-  //   setError(null);
+  const deleteBook = async (id) => {
+    setLoading(true);
+    setError(null);
 
-  //   try {
-  //     await deleteBook_API(id);
-  //     setBookList((prev) => prev.filter((b) => b.id !== id));
-  //   } catch (err) {
-  //     setError(err.message);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+    try {
+      await deleteBook_API(id);
+
+      // Remove from local state after backend confirms
+      setBookList((prev) => prev.filter((book) => book.id !== id));
+
+      return true;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+      
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <BookContext.Provider
@@ -104,7 +111,7 @@ const BookContextProvider = ({ children }) => {
         addBook,
         updateBook,
         getBookById,
-        // deleteBook,
+        deleteBook,
       }}
     >
       {children}

@@ -1,0 +1,114 @@
+/* ================================
+   Glass Navbar – Balanced Version
+   ================================ */
+
+.navbar-glass {
+  /* Stronger glass body */
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.75),
+    rgba(255, 255, 255, 0.65)
+  );
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* ================================
+   Toolbar Layout
+   ================================ */
+
+.navbar-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 32px;
+  min-height: 64px;
+}
+
+/* ================================
+   Logo / Brand
+   ================================ */
+
+.navbar-logo {
+  font-family: "Georgia", serif;
+  font-weight: 700;
+  font-size: 1.35rem;
+  color: #2e2e2e; /* BLACK text */
+  letter-spacing: 0.4px;
+}
+
+/* ================================
+   Actions
+   ================================ */
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ================================
+   Buttons
+   ================================ */
+
+.nav-btn {
+  color: #2e2e2e !important; /* BLACK text */
+  text-transform: none !important;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  padding: 6px 14px;
+  transition: background 0.2s ease;
+}
+
+.nav-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+/* ================================
+   Dropdown
+   ================================ */
+
+.dropdown-wrapper {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 48px;
+  right: 0;
+  min-width: 190px;
+  padding: 8px;
+  border-radius: 14px;
+
+  background: #ffffff; /* solid for clarity */
+
+  box-shadow:
+    0 15px 35px rgba(0, 0, 0, 0.25);
+
+  z-index: 1300;
+}
+
+/* ================================
+   Dropdown Items
+   ================================ */
+
+.dropdown-item {
+  justify-content: flex-start !important;
+  text-transform: none !important;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: #2e2e2e !important;
+}
+
+.dropdown-item:hover {
+  background: rgba(0, 0, 0, 0.05);
+}

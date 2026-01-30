@@ -1,98 +1,53 @@
-.book-form {
-  max-width: 500px;
-  margin: 40px auto;
-  padding: 30px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  font-family: 'Segoe UI', sans-serif;
+.book-form-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f3efe6, #e7dccb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  font-family: "Georgia", serif;
 }
 
-.book-form h2 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.book-form label {
-  display: block;
-  margin-bottom: 15px;
-  font-weight: 600;
-  color: #444;
-}
-
-.book-form input[type="text"],
-.book-form input[type="file"] {
+.book-form-card {
   width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
+  max-width: 720px;
+  min-height: 520px;
+  padding: 36px 40px;
+  border-radius: 16px;
+  background: #fffdf7;
+  box-shadow: 0 20px 50px rgba(60, 40, 20, 0.25);
 }
 
-.book-form input[type="text"]:focus {
-  border-color: #6a5acd;
-  outline: none;
-  box-shadow: 0 0 5px rgba(106, 90, 205, 0.3);
+.form-title {
+  font-weight: 700;
+  color: #4a2c2a;
 }
 
-.error {
-  color: red;
-  font-size: 13px;
+.form-subtitle {
+  color: #6d4c41;
+  font-size: 0.95rem;
   margin-top: 4px;
-  display: block;
 }
 
-.submit-button {
-  width: 100%;
-  padding: 12px;
-  background-color: #007bff;
-  color: white;
-  font-weight: bold;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 20px;
+.back-btn {
+  color: #6d4c41;
+  margin-bottom: 16px;
 }
 
-.submit-button:hover {
-  background-color: #0056b3;
+.upload-btn {
+  border-color: #8d6e63;
+  color: #6d4c41;
 }
 
-.back-button {
-  background: none;
-  border: none;
-  color: #007bff;
-  font-size: 14px;
-  cursor: pointer;
-  margin-bottom: 10px;
+.upload-btn:hover {
+  background-color: rgba(141, 110, 99, 0.08);
 }
 
-.back-button:hover {
-  text-decoration: underline;
+.submit-btn {
+  margin-top: 12px;
+  background: linear-gradient(135deg, #6d4c41, #4e342e);
 }
 
-.modal {
-  margin-top: 20px;
-  padding: 15px;
-  background-color: #e6ffe6;
-  border: 1px solid #00cc66;
-  border-radius: 6px;
-  text-align: center;
-  color: #006633;
-}
-
-.modal button {
-  margin-top: 10px;
-  padding: 8px 16px;
-  background-color: #00cc66;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.modal button:hover {
-  background-color: #00994d;
+.submit-btn:hover {
+  background: linear-gradient(135deg, #5d4037, #3e2723);
 }

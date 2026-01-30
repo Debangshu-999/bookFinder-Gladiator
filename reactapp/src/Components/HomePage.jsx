@@ -5,17 +5,8 @@ import './HomePage.css';
 const HomePage = () => {
   return (
     <div className="homepage">
-      {/* <nav role="navigation">
-        <BookRecommenderNavbar />
-      </nav> */}
 
       <div className="cover">
-        {/* <LazyLoadImage
-          src="/bookfindercoverimage.jpeg"
-          alt="BookFinder Cover"
-          effect="blur"
-          className="cover-image"
-        /> */}
         <div className="title title-overlay-dark">BookFinder</div>
       </div>
 
